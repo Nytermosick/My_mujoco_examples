@@ -1,6 +1,11 @@
 import numpy as np
 from simulator import Simulator, ActuatorMotor
 from pathlib import Path
+import pinocchio as pin
+
+# Load the robot model from scene XML
+# model = pin.buildModelFromMJCF("robots/inverted_pendulum/inverted_pendulum.xml")
+# pin_data = model.createData()
 
 
 def controller(q: np.ndarray, dq: np.ndarray, t: float) -> np.ndarray:
@@ -15,9 +20,14 @@ def controller(q: np.ndarray, dq: np.ndarray, t: float) -> np.ndarray:
         tau: Joint torques command [Nm]
     """
     # Control gains tuned for UR5e
-    kp = np.array([2, 10])
+    kp = np.array([2, 12])
     kd = 2 * np.sqrt(kp)
-    
+
+    # M = pin_data.M
+    # print(M)
+    # nle = pin_data.nle
+    # print(nle)
+
     # Target joint configuration
     qdes = np.array([0.0, 0.0])
     
