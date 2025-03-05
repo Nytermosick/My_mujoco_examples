@@ -263,7 +263,6 @@ class Simulator:
         if self.controls.ndim == 1:
             self.controls = self.controls.reshape(-1, 1)
 
-        print(self.controls.ndim)
         for i in range(self.controls.shape[1]):
             plt.plot(self.times, self.controls[:, i], label=f'Joint {i+1}')
         plt.xlabel('Time [s]')

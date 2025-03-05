@@ -4,8 +4,8 @@ from pathlib import Path
 import pinocchio as pin
 
 # Load the robot model from scene XML
-# model = pin.buildModelFromMJCF("robots/inverted_pendulum/inverted_pendulum.xml")
-# pin_data = model.createData()
+model = pin.buildModelFromMJCF("robots/inverted_pendulum/inverted_pendulum.xml")
+pin_data = model.createData()
 
 
 def controller(q: np.ndarray, dq: np.ndarray, t: float) -> np.ndarray:
@@ -19,21 +19,29 @@ def controller(q: np.ndarray, dq: np.ndarray, t: float) -> np.ndarray:
     Returns:
         tau: Joint torques command [Nm]
     """
-    # Control gains tuned for UR5e
-    kp = np.array([2, 12])
+    # Control gains
+    kp = np.array([4, 14])
     kd = 2 * np.sqrt(kp)
 
-    # M = pin_data.M
-    # print(M)
-    # nle = pin_data.nle
-    # print(nle)
-
     # Target joint configuration
-    qdes = np.array([0.0, 0.0])
+    q_des = np.array([0.0, 0.0])
+    dq_des = np.array([0.0, 0.0])
+    ddq_des = np.array([0.0, 0.0])
+
+    pin.computeAllTerms(model, pin_data, q, dq)
+
+    M = pin_data.M
+    #print(M)
+    nle = pin_data.nle
+    #print(nle)
+
+    u = -(M @ (kp @ (q_des - q) + kd @ (dq_des - dq) + ddq_des) + nle)
+    print(q_des - q)
     
     # PD control law
-    tau = -(kp @ (qdes - q) - kd @ dq)
-    return tau
+    # u = -(kp @ (q_des - q) - kd @ dq)
+
+    return u[1]
 
 def main():
     torque_control = ActuatorMotor(torque_range=[-1.0, 1.0])
