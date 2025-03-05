@@ -1,4 +1,9 @@
 <mujoco model="inverted pendulum">
+
+	<!-- <visual>
+		<global offheight="1080"/>
+	</visual> -->
+
 	<compiler inertiafromgeom="true"/>
 	<default>
 		<joint armature="0" damping="1" limited="true"/>

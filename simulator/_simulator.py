@@ -26,9 +26,9 @@ class Simulator:
                  dt: float = 0.002,
                  fps: int = 30,
                  width: int = 1920,
-                 heigth: int = 1080,
+                 height: int = 1080,
                  record_video: bool = True,
-                 video_path: str = "logs/simulation.mp4") -> None:
+                 video_path: str = None) -> None:
         
         # Load the model
         self.model = mujoco.MjModel.from_xml_path(xml_path)
@@ -44,15 +44,23 @@ class Simulator:
 
         #Video parameters
         self.width = width
-        self.heigth = heigth
+        self.height = height
         self.fps = fps
 
+        # Path for logs
+        self.log_path = xml_path.split("/")[-2]
+        os.makedirs(f'logs/{self.log_path}', exist_ok=True)
+
         # Setup renderer
-        self.renderer = mujoco.Renderer(self.model, self.width, self.heigth)
+        self.renderer = mujoco.Renderer(self.model, width=self.width, height = self.height)
 
         self.record_video = record_video
         self.frames: List[np.ndarray] = []
+
+        if video_path is None:
+            video_path = f"logs/{self.log_path}/simulation.mp4"
         self.video_path = Path(video_path)
+
         self._setup_video_recording()
 
     def _setup_video_recording(self) -> None:
@@ -243,7 +251,7 @@ class Simulator:
         plt.title('Joint Position over Time')
         plt.legend()
         plt.grid(True)
-        plt.savefig(f'logs/position.png')
+        plt.savefig(f'logs/{self.log_path}/position.png')
         plt.close()
 
         # Joint position errors plot
@@ -255,7 +263,7 @@ class Simulator:
         plt.title('Joint Position error over Time')
         plt.legend()
         plt.grid(True)
-        plt.savefig(f'logs/position_error.png')
+        plt.savefig(f'logs/{self.log_path}/position_error.png')
         plt.close()
 
 
@@ -270,5 +278,5 @@ class Simulator:
         plt.title('Joint control signals over Time')
         plt.legend()
         plt.grid(True)
-        plt.savefig(f'logs/control_signals.png')
+        plt.savefig(f'logs/{self.log_path}/control_signals.png')
         plt.close()

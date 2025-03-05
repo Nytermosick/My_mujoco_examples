@@ -50,13 +50,13 @@ def main():
         xml_path="robots/inverted_pendulum/scene.xml",
         actuator= torque_control,
         fps=30,
-        heigth=600,
-        width=1024,
-        record_video=False
+        #heigth=600,
+        #width=1024,
+        record_video=True
     )
 
     sim.set_controller(controller)
-    sim.run(time_steps=20.0, q0=[0.0, 0.1])
+    sim.run(time_steps=20.0, q0=[0.0, 0.3])
 
     sim.plot_results()
 
