@@ -1,4 +1,4 @@
-<mujoco model="inverted pendulum">
+<mujoco model="cartpole">
 
 	<!-- <visual>
 		<global offheight="1080"/>

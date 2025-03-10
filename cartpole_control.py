@@ -4,21 +4,12 @@ from pathlib import Path
 import pinocchio as pin
 
 # Load the robot model from scene XML
-model = pin.buildModelFromMJCF("robots/inverted_pendulum/inverted_pendulum.xml")
+model = pin.buildModelFromMJCF("robots/cartpole/cartpole.xml")
 pin_data = model.createData()
 
 
 def controller(q: np.ndarray, dq: np.ndarray, t: float) -> np.ndarray:
-    """Joint space PD controller.
     
-    Args:
-        q: Current joint positions [rad]
-        dq: Current joint velocities [rad/s]
-        t: Current simulation time [s]
-        
-    Returns:
-        tau: Joint torques command [Nm]
-    """
     # Control gains
     kp = np.array([4, 14])
     kd = 2 * np.sqrt(kp)
@@ -35,6 +26,7 @@ def controller(q: np.ndarray, dq: np.ndarray, t: float) -> np.ndarray:
     nle = pin_data.nle
     #print(nle)
 
+    # Nonlinear control
     u = -(M @ (kp @ (q_des - q) + kd @ (dq_des - dq) + ddq_des) + nle)
     print(q_des - q)
     
@@ -47,7 +39,7 @@ def main():
     torque_control = ActuatorMotor(torque_range=[-1.0, 1.0])
     
     sim = Simulator(
-        xml_path="robots/inverted_pendulum/scene.xml",
+        xml_path="robots/cartpole/scene.xml",
         actuator= torque_control,
         fps=30,
         #heigth=600,
@@ -56,7 +48,7 @@ def main():
     )
 
     sim.set_controller(controller)
-    sim.run(time_steps=20.0, q0=[0.0, 0.3])
+    sim.run(time_steps=10.0, q0=[0.0, 0.3])
 
     sim.plot_results()
 

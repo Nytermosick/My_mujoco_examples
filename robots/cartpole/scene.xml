@@ -1,5 +1,5 @@
 <mujoco model="scene">
-  <include file="inverted_pendulum.xml"/>
+  <include file="cartpole.xml"/>
 
   <statistic center="0.3 0 0.3" extent="0.8" meansize="0.08"/>
 
